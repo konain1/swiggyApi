@@ -6,9 +6,12 @@ import Cards from './Cards';
 function App() {
   const [restaurant, setRestaurant] = useState([]);
   const [error, setError] = useState('');
+  const [searcBox,setSearchBox] = useState()
+  const [filteredValue,setFilteredValue] = useState()
 
   const url = 'https://www.swiggy.com/mapi/homepage/getCards?lat=28.65200&lng=77.16630';
 
+  
   const fetchApi = async () => {
     try {
       const response = await fetch(url);  
@@ -22,6 +25,7 @@ function App() {
       console.log(restaurants)
       if (restaurants) {
         setRestaurant(restaurants);
+        setFilteredValue(restaurants)
       } else {
         setError('Failed to fetch restaurants data');
       }
@@ -31,13 +35,27 @@ function App() {
     }
   };
 
+
+  function handleSearchBtn(){
+    let filteredFood = restaurant.filter((food)=>{
+      return food.info.name.toLowerCase().includes(searcBox)
+    })
+    console.log(filteredFood)
+    setFilteredValue(filteredFood)
+  }
+
   useEffect(() => {
     fetchApi();
+    console.log(filteredValue)
   }, []);
 
   return (
     <div>
-      {error ? <p>{error}</p> : <Cards restaurant={restaurant} />}
+    <div>
+      <input type='text' onChange={(e)=>{setSearchBox(e.target.value)}} />
+      <button onClick={handleSearchBtn}>Search</button>
+    </div>
+      {error ? <p>{error}</p> : <Cards restaurant={filteredValue} />}
     </div>
   );
 }
