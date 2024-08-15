@@ -2,29 +2,28 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import axios from 'axios';
 import Cards from './Cards';
+import { mockData } from './utils/mock_data';
 
 function App() {
-  const [restaurant, setRestaurant] = useState([]);
+  const [restaurant, setRestaurant] = useState(mockData);
   const [error, setError] = useState('');
   const [searcBox,setSearchBox] = useState()
   const [filteredValue,setFilteredValue] = useState()
 
-  const url = 'https://www.swiggy.com/mapi/homepage/getCards?lat=28.65200&lng=77.16630';
+  
+
+  // const url = 'https://www.swiggy.com/mapi/homepage/getCards?lat=28.65200&lng=77.16630';
+  let url = mockData.data?.success?.cards?.[1]?.gridWidget?.gridElements?.infoWithStyle?.restaurants;
+
 
   
   const fetchApi = async () => {
     try {
-      const response = await fetch(url);  
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const res = await response.json();
-      console.log(res)
-      
-      const restaurants = res?.data?.success?.cards?.[1]?.gridWidget?.gridElements?.infoWithStyle?.restaurants;
-      console.log(restaurants)
-      // let cousine  = restaurants.filter((res) => res.cuisines.includes(searcBox))
-      // console.log(cousine)
+      console.log( "mock " ,mockData.data.success.cards[1].gridWidget.gridElements.infoWithStyle.restaurants)
+  
+      const restaurants = url
+
+     
       if (restaurants) {
         setRestaurant(restaurants);
         setFilteredValue(restaurants)
@@ -53,24 +52,15 @@ function App() {
     })
 
     console.log({ filteredFood})
-    
-
     setFilteredValue(filteredFood)
-    cuisinesFn()
+   
   }
 
-  function cuisinesFn(){
-
-    let cuisinesVal = restaurant.map((items)=>{
-      return items.info.cuisines
-      console.log("cuisines",cuisinesVal)
-
-
-    })
-  }
+  
 
   useEffect(() => {
     fetchApi();
+    
     
   }, []);
 
