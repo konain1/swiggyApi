@@ -35,6 +35,7 @@ function App() {
       setError('Failed to fetch data');
     }
   };
+  
 
   function toTitleCase(str) {
     return str
