@@ -19,10 +19,12 @@ function App() {
         throw new Error('Network response was not ok');
       }
       const res = await response.json();
-
-      // Safely access the nested data
-      const restaurants = res?.data?.success?.cards?.[3]?.gridWidget?.gridElements?.infoWithStyle?.restaurants;
+      console.log(res)
+      
+      const restaurants = res?.data?.success?.cards?.[1]?.gridWidget?.gridElements?.infoWithStyle?.restaurants;
       console.log(restaurants)
+      // let cousine  = restaurants.filter((res) => res.cuisines.includes(searcBox))
+      // console.log(cousine)
       if (restaurants) {
         setRestaurant(restaurants);
         setFilteredValue(restaurants)
@@ -35,18 +37,41 @@ function App() {
     }
   };
 
+  function toTitleCase(str) {
+    return str
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+  }
 
   function handleSearchBtn(){
     let filteredFood = restaurant.filter((food)=>{
-      return food.info.name.toLowerCase().includes(searcBox)
+      const toTitleCaseStr =  toTitleCase(searcBox);
+      console.log('searchBox', food.info.cuisines);
+      return food.info.cuisines.some(cuisine => cuisine.includes(toTitleCaseStr));
     })
-    console.log(filteredFood)
+
+    console.log({ filteredFood})
+    
+
     setFilteredValue(filteredFood)
+    cuisinesFn()
+  }
+
+  function cuisinesFn(){
+
+    let cuisinesVal = restaurant.map((items)=>{
+      return items.info.cuisines
+      console.log("cuisines",cuisinesVal)
+
+
+    })
   }
 
   useEffect(() => {
     fetchApi();
-    console.log(filteredValue)
+    
   }, []);
 
   return (
